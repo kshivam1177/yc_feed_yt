@@ -1,0 +1,122 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+APPLICATON_ID = ENV["APPLICATON_ID"]
+BUNDLE_IDENTIFIER = ENV["BUNDLE_IDENTIFIER"]
+PROVISIONING_PROFILE_SPECIFIER = ENV["PROVISIONING_PROFILE_SPECIFIER"]
+TEMP_KEYCHAIN_USER = ENV["TEMP_KEYCHAIN_USER"]
+TEMP_KEYCHAIN_PASSWORD = ENV["TEMP_KEYCHAIN_PASSWORD"]
+
+def delete_temp_keychain(name)
+  delete_keychain(
+    name: name
+  ) if File.exist? File.expand_path("~/Library/Keychains/#{name}-db")
+end
+
+def create_temp_keychain(name, password)
+  create_keychain(
+    name: name,
+    password: password,
+    unlock: false,
+    timeout: 0
+  )
+end
+def ensure_temp_keychain(name, password)
+  delete_temp_keychain(name)
+  create_temp_keychain(name, password)
+end
+
+platform :ios do
+
+  desc "Print app version"
+  lane :print_app_version do
+    echo(message: "Printing app version")
+    echo(message: flutter_version()["version_name"])
+    echo(message: flutter_version()["version_code"])
+  end
+
+  desc "Build app and submit it to testflight"
+  lane :deploy_internal_testing do
+    begin
+      keychain_name = TEMP_KEYCHAIN_USER
+      keychain_password = TEMP_KEYCHAIN_PASSWORD
+      ensure_temp_keychain(keychain_name, keychain_password)
+      match(
+        type: 'appstore',
+        app_identifier: "#{BUNDLE_IDENTIFIER}",
+        git_basic_authorization: Base64.strict_encode64(ENV["GIT_AUTHORIZATION"]),
+        readonly: true,
+        keychain_name: keychain_name,
+        keychain_password: keychain_password
+      )
+      gym(
+        configuration: "Release",
+        workspace: "Runner.xcworkspace",
+        scheme: "Runner",
+        export_method: "app-store",
+        export_options: {
+          provisioningProfiles: {
+              APPLICATON_ID => PROVISIONING_PROFILE_SPECIFIER
+          }
+        }
+      )
+      pilot(
+        apple_id: "#{APPLICATON_ID}",
+        app_identifier: "#{BUNDLE_IDENTIFIER}",
+        skip_waiting_for_build_processing: true,
+        skip_submission: true,
+        distribute_external: false,
+        notify_external_testers: false,
+        ipa: "./Runner.ipa"
+      )
+      delete_temp_keychain(keychain_name)
+    rescue => exception
+      on_error_internal_testing(exception)
+    end
+    versionName = flutter_version()["version_name"]
+    versionCode = flutter_version()["version_code"]
+    slack(
+      message: "App successfully released for internal testing on play console!",
+      slack_url: ENV["SLACK_WEBHOOK_URL"],
+      success: true,
+      default_payloads: [],
+      payload: {
+        "Branch" => ENV["BRANCH"],
+        "APK Flavor" => ENV["FLAVOR"],
+        "Environment" => ENV["CUSTOM_ENV"],
+        "APP VERSION" => versionName+'+'+versionCode
+      },
+    )
+  end
+end
+
+def on_error_internal_testing(exception)
+  slack(
+    message: "IOS build and upload failed with exception: #{exception}",
+    success: false,
+    slack_url: ENV["SLACK_WEBHOOK_URL"],
+    default_payloads: [],
+    attachment_properties: {
+      fields: [
+        {
+          title: "Error message",
+          value: exception
+        }
+      ]
+    }
+  )
+end

@@ -1,0 +1,8 @@
+<resources>
+    <string name="facebook_app_id">307054140455358</string>
+    <string name="fb_login_protocol_scheme">fb307054140455358</string>
+    <!-- use for dev release -->
+    <!-- <string name="truecaller_api_key">vGYqJb1e22c4a44c0462b94ad682989799abe</string> -->
+    <!-- use for prod release -->
+    <string name="truecaller_api_key">eoAsIadd4b25016994fcf842fc3ee1c92327a</string>
+</resources>

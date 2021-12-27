@@ -1,0 +1,103 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+  end
+
+  desc "Print app version"
+  lane :print_app_version do
+    echo(message: "Printing app version")
+    versionName = flutter_version()["version_name"]
+    versionCode = flutter_version()["version_code"]
+    echo(message: versionName+'+'+versionCode)
+  end
+
+  desc "Build and send APK on slack for testing"
+  lane :build_and_send_apk_on_slack do
+    versionName = flutter_version()["version_name"]
+    versionCode = flutter_version()["version_code"]
+    appVersion = versionName+'+'+versionCode
+    slack(
+      message: "App built successfully!",
+      slack_url: ENV["SLACK_WEBHOOK_URL"],
+      success: true,
+      payload: {
+        "Branch" => ENV["BRANCH"],
+        "APK Flavor" => ENV["FLAVOR"],
+        "Environment" => ENV["CUSTOM_ENV"],
+        "APK URL" => ENV["APK_URL"],
+        "APP VERSION" => appVersion
+      },
+      default_payloads: [],
+    )
+  end
+
+  desc "Build app and submit it to internal testing track on play console"
+  lane :deploy_internal_testing do
+    # begin
+    #   sh "something"
+    # rescue => exception
+    #   on_error_internal_testing(exception)
+    # end
+    begin
+      supply(
+        track: "internal",
+        aab:"../build/app/outputs/bundle/prodRelease/app-prod-release.aab",
+        skip_upload_metadata: true,
+        skip_upload_images: true,
+        skip_upload_screenshots: true,
+      )
+    rescue => exception
+      on_error_internal_testing(exception)
+    end
+    versionName = flutter_version()["version_name"]
+    versionCode = flutter_version()["version_code"]
+    appVersion = versionName+'+'+versionCode
+    slack(
+      message: "App successfully released for internal testing on play console!",
+      slack_url: ENV["SLACK_WEBHOOK_URL"],
+      success: true,
+      payload: {
+        "Branch" => ENV["BRANCH"],
+        "APK Flavor" => ENV["FLAVOR"],
+        "Environment" => ENV["CUSTOM_ENV"],
+        "APP VERSION" => appVersion
+      },
+      default_payloads: [],
+    )
+  end
+end
+
+def on_error_internal_testing(exception)
+  slack(
+    message: "Android build and upload failed with exception: #{exception}",
+    success: false,
+    slack_url: ENV["SLACK_WEBHOOK_URL"],
+    default_payloads: [],
+    attachment_properties: {
+      fields: [
+        {
+          title: "Error message",
+          value: exception
+        }
+      ]
+    }
+  )
+end
