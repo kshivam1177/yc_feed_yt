@@ -1,9 +1,5 @@
 import UIKit
 import Flutter
-import moengage_flutter
-import MoEngage
-import AppsFlyerLib
-// import NewRelic
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -22,8 +18,6 @@ import AppsFlyerLib
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
 
-        // NewRelic.start(withApplicationToken:"eu01xx977bf337e381e2c20c17174f8b0a2809ec6d-NRMA")
-
         let controller = window.rootViewController as! FlutterViewController
         methodChannel = FlutterMethodChannel(name: "yellowclass.com/channel", binaryMessenger: controller.binaryMessenger)
         eventChannel = FlutterEventChannel(name: "yellowclass.com/events", binaryMessenger: controller.binaryMessenger)
@@ -36,28 +30,7 @@ import AppsFlyerLib
             }
             self?.receiveInitialLink(result: result)
         })
-
-        var sdkConfig : MOSDKConfig
-        let yourAppID = "KPSBSYK7082WT0ORCVMJ46XX" // yellowclass_prod app on moengage
-        // let yourAppID = "2LG1TDV6NRAV4BCR82NVWDC2" // yellowclass_staging app on moengage
-        if let config = MoEngage.sharedInstance().getDefaultSDKConfiguration() {
-            sdkConfig = config
-            sdkConfig.moeAppID = yourAppID
-        }
-        else{
-            sdkConfig = MOSDKConfig.init(appID: yourAppID)
-        }
-        // sdkConfig.appGroupID = "group.com.alphadevs.MoEngage.NotificationServices"
-        sdkConfig.moeDataCenter = DATA_CENTER_01
-        sdkConfig.optOutIDFATracking = true
-        sdkConfig.optOutIDFVTracking = true
-        sdkConfig.optOutDataTracking = true
-        sdkConfig.optOutPushNotification = false
-        sdkConfig.optOutInAppCampaign = false
-
-        MOFlutterInitializer.sharedInstance.initializeWithSDKConfig(sdkConfig, andLaunchOptions: launchOptions)
-
-
+        
         GeneratedPluginRegistrant.register(with: self)
         eventChannel?.setStreamHandler(linkStreamHandler)
         pushTokenChannel?.setStreamHandler(pushTokenStreamHandler)
@@ -73,9 +46,10 @@ import AppsFlyerLib
         _ application: UIApplication,
         continue userActivity: NSUserActivity,
         restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        NSLog("AppsFlyer [deep link]: continue userActivity")
-               AppsFlyerAttribution.shared()!.continueUserActivity(userActivity, restorationHandler:nil )
-        eventChannel?.setStreamHandler(linkStreamHandler)
+        
+          
+            eventChannel?.setStreamHandler(linkStreamHandler)
+            
         switch userActivity.activityType {
         case NSUserActivityTypeBrowsingWeb:
             guard let url = userActivity.webpageURL else {
@@ -92,14 +66,11 @@ import AppsFlyerLib
 
     override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
          NSLog("AppsFlyer [deep link]: Open URI-scheme options")
-
-         AppsFlyerAttribution.shared()!.handleOpenUrl(url, options: options)
             return true
         }
 
     override func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
         NSLog("AppsFlyer [deep link]: Open URI-scheme for iOS 9 and above")
-        AppsFlyerAttribution.shared()!.handleOpenUrl(url, sourceApplication: sourceApplication, annotation: annotation);
         return true
        }
 
