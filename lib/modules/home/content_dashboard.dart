@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:yc_app/blocs/homepage_bloc.dart';
+import 'package:yc_app/modules/community/social_feed.dart';
 import 'package:yc_app/modules/home/class_card.dart';
 import 'package:yc_app/modules/home/pre_login/components/pre_login_dashboard_widgets.dart';
 import 'package:yc_app/modules/home/profile_component.dart';
@@ -70,7 +71,7 @@ class _ContentDashboardBuilderState extends State<ContentDashboardBuilder> {
   }
 
   @override
- void dispose() {
+  void dispose() {
     scrollController.removeListener(listener);
     super.dispose();
   }
@@ -530,6 +531,12 @@ class _ContentDashboardBuilderState extends State<ContentDashboardBuilder> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => SocialFeed()));
+          },
+          label: Text("Feed")),
       appBar: AppBar(
         elevation: 2,
         centerTitle: true,
@@ -548,6 +555,7 @@ class _ContentDashboardBuilderState extends State<ContentDashboardBuilder> {
           homePageBloc.recommendedClassesListingId = null;
           homePageBloc.contentDashboardSections = [];
           // homePageBloc.getAgeRange();
+          homePageBloc.getContentDashboardData();
         },
         child: StreamBuilder<bool>(
           stream: homePageBloc.contentLoadingController.stream,
@@ -559,6 +567,7 @@ class _ContentDashboardBuilderState extends State<ContentDashboardBuilder> {
                   homePageBloc.recommendedClassesListingId = null;
                   homePageBloc.contentDashboardSections = [];
                   // homePageBloc.getAgeRange();
+                  homePageBloc.getContentDashboardData();
                 },
               );
             }

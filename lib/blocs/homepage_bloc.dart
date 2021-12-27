@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:yc_app/blocs/splash_bloc.dart';
 import 'package:yc_app/shared/models/content_dashboard.model.dart';
 import 'package:yc_app/shared/resources/repository/homepage_repo.dart';
 
@@ -38,7 +39,6 @@ class HomePageBloc implements BaseBloc {
 
   Future<void> getUpdatedViewerCount(
       List<HomePageSection2>? data, String headerKey) async {
-
     if (data == null) {
       return;
     }
@@ -81,15 +81,14 @@ class HomePageBloc implements BaseBloc {
       return;
     }
     contentLoadingController.add(true);
+    if (!sharedPreferenceService.containsAnonymousUserData) {
+      await SplashBloc().getAnonymousUser();
+    }
     ApiState<dynamic> state = await homePageRepository.getContentDashboardData(
-        anonymousUserId: CommonHelpers.isUserLoggedIn()
-            ? null
-            : sharedPreferenceService.anonymousUserData.userId,
-        anonymousProfileId: CommonHelpers.isUserLoggedIn()
-            ? null
-            : sharedPreferenceService.anonymousUserData.profileId,
+        anonymousUserId: sharedPreferenceService.anonymousUserData.userId,
+        anonymousProfileId: sharedPreferenceService.anonymousUserData.profileId,
         page: page,
-        min:  1,
+        min: 1,
         max: 16,
         recommendedClassesListingId: recommendedClassesListingId);
     if (state is SuccessState) {

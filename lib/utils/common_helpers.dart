@@ -202,14 +202,18 @@ class CommonHelpers {
             : null,
         'trackingId': null,
         'sessionTrackingId': null,
-        'userAgent': jsonEncode(
-          {
-            "appVersion": "1.0.0",
-            "source": "APP",
-            "os": "ANDROID/IOS",
-            "timeZone": "${-1 * DateTime.now().timeZoneOffset.inMinutes}",
-          },
-        )
+        // 'userAgent1': jsonEncode({
+        //   "appVersion": "1.0.0",
+        //   "source": "APP",
+        //   "os": "ANDROID/IOS",
+        //   "timeZone": "${-1 * DateTime.now().timeZoneOffset.inMinutes}",
+        // }),
+        'userAgent': jsonEncode({
+          "source": "APP",
+          "os": Platform.isAndroid ? "ANDROID" : "IOS",
+          "timeZone": "-330",
+          "appVersion": "2.1.4"
+        }),
       },
     )!
         .map((String key, dynamic value) => MapEntry(key, value.toString()));
