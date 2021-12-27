@@ -9,7 +9,7 @@ import 'package:yc_app/utils/colors.dart';
 import 'package:yc_app/utils/common_helpers.dart';
 import 'package:yc_app/utils/spacing.dart';
 
-import '../video_app.dart';
+import '../home/video_app.dart';
 
 class FeedImage extends StatefulWidget {
   final Medias media;

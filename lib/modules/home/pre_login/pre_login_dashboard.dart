@@ -10,12 +10,13 @@ import 'package:yc_app/shared/widgets/errors/overall_error_screen.dart';
 import 'package:yc_app/shared/widgets/errors/something_went_wrong_error.dart';
 import 'package:yc_app/shared/widgets/shimmer/shimmer_effect.dart';
 
-import 'package:yc_app/modules/home/pre_login/components/pre_login_dashboard_widgets.dart';
-import 'package:yc_app/modules/home/pre_login/components/featured_mentors.dart';
-import 'package:yc_app/modules/home/pre_login/components/first_class.dart';
-import 'package:yc_app/modules/home/pre_login/components/moments_of_fun.dart';
-import 'package:yc_app/modules/home/pre_login/components/start_a_hobby.dart';
-import 'package:yc_app/modules/home/pre_login/components/what_sets_us_apart.dart';
+import 'package:yc_app/modules/home/pre_login/pre_login_dashboard_widgets.dart';
+import 'package:yc_app/modules/home/pre_login/featured_mentors.dart';
+import 'package:yc_app/modules/home/pre_login/moments_of_fun.dart';
+import 'package:yc_app/modules/home/pre_login/start_a_hobby.dart';
+import 'package:yc_app/modules/home/pre_login/what_sets_us_apart.dart';
+
+import 'first_class.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

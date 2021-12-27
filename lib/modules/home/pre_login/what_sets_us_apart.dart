@@ -6,7 +6,7 @@ import 'package:yc_app/utils/common_helpers.dart';
 
 import 'package:yc_app/shared/views/shared_views.dart';
 
-import 'package:yc_app/modules/home/pre_login/components/pre_login_dashboard_widgets.dart';
+import 'package:yc_app/modules/home/pre_login/pre_login_dashboard_widgets.dart';
 
 Widget whatSetsUsApart() {
   Widget sectionTile({

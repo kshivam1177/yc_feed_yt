@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:yc_app/blocs/homepage_bloc.dart';
 import 'package:yc_app/shared/widgets/buttons/buttons.dart';
 import 'package:yc_app/utils/spacing.dart';
-import 'package:yc_app/modules/home/pre_login/components/pre_login_dashboard_widgets.dart';
+import 'package:yc_app/modules/home/pre_login/pre_login_dashboard_widgets.dart';
 import 'mentor_horizontal_list.dart';
 
 Widget featuredMentors() {

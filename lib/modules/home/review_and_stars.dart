@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:yc_app/modules/home/pre_login/components/pre_login_dashboard_widgets.dart';
+import 'package:yc_app/modules/home/pre_login/pre_login_dashboard_widgets.dart';
 import 'package:yc_app/shared/models/content_dashboard.model.dart';
 import 'package:yc_app/shared/views/shared_views.dart';
 import 'package:yc_app/utils/assets.dart';

@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:yc_app/blocs/homepage_bloc.dart';
 import 'package:yc_app/modules/community/social_feed.dart';
 import 'package:yc_app/modules/home/class_card.dart';
-import 'package:yc_app/modules/home/pre_login/components/pre_login_dashboard_widgets.dart';
+import 'package:yc_app/modules/home/pre_login/pre_login_dashboard_widgets.dart';
 import 'package:yc_app/modules/home/profile_component.dart';
 import 'package:yc_app/modules/home/register_hook.dart';
 import 'package:yc_app/modules/home/review_and_stars.dart';

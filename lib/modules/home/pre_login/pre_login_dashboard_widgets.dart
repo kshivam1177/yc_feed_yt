@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yc_app/blocs/homepage_bloc.dart';
-import 'package:yc_app/modules/home/pre_login/components/class_card.dart';
+import 'package:yc_app/modules/home/pre_login/class_card.dart';
 import 'package:yc_app/shared/models/homepage/pre_login_homepage.model.dart';
 import 'package:yc_app/utils/colors.dart';
 import 'package:yc_app/utils/common_helpers.dart';
